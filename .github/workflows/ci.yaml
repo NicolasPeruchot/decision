@@ -25,9 +25,3 @@ jobs:
         run: |
           pip install pre-commit
           pre-commit run -a --hook-stage push
-      - name: Setup tests
-        run: |
-          make setup-tests
-      - name: Run tests
-        run: |
-          pytest
