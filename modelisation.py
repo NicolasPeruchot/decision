@@ -1,6 +1,6 @@
 import json
 from enum import Enum
-from gurobipy import Model
+from gurobipy import Model, GRB, quicksum
 
 
 class DATASET(Enum):
@@ -13,7 +13,7 @@ def load_data(name):
     """name must be an instance of DATASET like DATASET.TOY for example"""
     if not isinstance(name, DATASET):
         raise TypeError("direction must be an instance of DATASET Enum")
-    with open(f"data/{name.value}_instance.json", "r") as f:
+    with open(f"decision/data/{name.value}_instance.json", "r") as f:
         data = json.load(f)
     return data
 
@@ -27,24 +27,29 @@ def get_dims(data):
     )
 
 
-data = load_data(DATASET.TOY)
-n_staff, horizon, n_qualifs, n_jobs = get_dims(data)
-
-
 def init_model():
     m = Model("Project modelling")
     return m
 
 
-def create_decision_variables(model, n_staff, horizon, n_qualification, n_jobs):
-    X = model.addMVar((n_staff, horizon, n_qualification, n_jobs), vtype=GRB.BINARY, name="X")
+def get_var_by_name(model, matrix_name, indexes):
+    string = matrix_name + "["
+    for i in indexes:
+        if i != 0:
+            string += ","
+        string += str(i)
+    string += "]"
+    return model.getVarByName(matrix_name + "[%d]" % (i for i in indexes)).X
+
+
+def create_decision_variables(model, n_staff, horizon, n_qualifs, n_jobs):
+    X = model.addMVar((n_staff, horizon, n_qualifs, n_jobs), vtype=GRB.BINARY, name="X")
     J = model.addMVar(n_jobs, vtype=GRB.BINARY, name="J")
     D = model.addMVar((n_jobs, 3), lb=0, ub=horizon + 1, vtype=GRB.INTEGER, name="D")
-    model.update()
     return model, X, J, D
 
 
-def add_constraints_for_J(model, X, J, jobs, qualifications=data["qualifications"]):
+def add_constraints_for_J(model, X, J, jobs, qualifications):
     for index_job in range(len(J)):
         model.addGenConstrIndicator(
             J[index_job],
@@ -81,7 +86,7 @@ def add_constraints_for_D(model, X, J, D, horizon):
         model.addGenConstrIndicator(J[index_job], False, D[index_job, :] == [0, horizon + 1, 0])
 
 
-def add_profit_as_first_objective(model, J, D, jobs=data["jobs"]):
+def add_profit_as_first_objective(model, J, D, jobs):
 
     benef = sum(
         [
@@ -99,7 +104,7 @@ def in_qualification(i, k):
     return k in data
 
 
-def qualification_constraint(model, n_staff, horizon, n_qualifs, n_jobs, X):
+def add_qualification_constraints(model, n_staff, horizon, n_qualifs, n_jobs, X):
     model.addConstrs(
         X[i, j, k, l] == 0
         for i in range(n_staff)
@@ -116,7 +121,7 @@ def in_vacation(i, j):
     return j in data
 
 
-def vacation_constraint(model, n_staff, horizon, n_qualifs, n_jobs, X):
+def add_vacation_constraints(model, n_staff, horizon, n_qualifs, n_jobs, X):
     model.addConstrs(
         X[i, j, k, l] == 0
         for i in range(n_staff)
@@ -128,5 +133,39 @@ def vacation_constraint(model, n_staff, horizon, n_qualifs, n_jobs, X):
 
 
 def min_nb_projet_per_staff(model, n_staff, horizon, n_qualifs, n_jobs):
-    obj1 = gurobipy.quicksum(M(i, j, k, l) for j in horizon for k in n_qualifs)
-    obj1 = gurobipy.quicksum()
+    obj1 = quicksum(M(i, j, k, l) for j in horizon for k in n_qualifs)
+    obj1 = quicksum()
+
+
+def main():
+    # Importing data
+    data = load_data(DATASET.TOY)
+    n_staff, horizon, n_qualifs, n_jobs = get_dims(data)
+
+    # Instanciation du modèle
+    model = init_model()
+
+    # Création des variables : binaires dans X et J, entières de 0 à horizon + 3
+    model, X, J, D = create_decision_variables(model, n_staff, horizon, n_qualifs, n_jobs)
+
+    # maj du modèle
+    model.update()
+
+    # Ajout des 3 constraintes
+    add_constraints_for_J(model, X, J, jobs=data["jobs"], qualifications=data["qualifications"])
+    add_constraints_for_D(model, X, J, D, horizon)
+    add_qualification_constraints(model, n_staff, horizon, n_qualifs, n_jobs, X)
+    add_vacation_constraints(model, n_staff, horizon, n_qualifs, n_jobs, X)
+
+    # Fonction Objectif
+    add_profit_as_first_objective(model, J, D, data["jobs"])
+
+    # Paramétrage (mode mute)
+    # model.params.outputflag = 0
+
+    # Résolution du PL
+    model.optimize()
+
+
+if __name__ == "__main__":
+    main()
