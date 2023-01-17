@@ -45,38 +45,52 @@ def create_decision_variables(model, n_staff, horizon, n_qualification, n_jobs):
 
 
 def add_constraints_for_J(model, X, J, jobs, qualifications=data["qualifications"]):
-    for job in J:
+    for index_job in range(len(J)):
         model.addGenConstrIndicator(
-            J[job],
+            J[index_job],
             True,
             (
-                sum(X[:, :, index_k, job]) >= jobs[job]["working_days_per_qualification"][k]
+                sum(X[:, :, index_k, index_job])
+                >= jobs[index_job]["working_days_per_qualification"][k]
                 for index_k, k in enumerate(qualifications)
             ),
         )
         model.addGenConstrIndicator(
-            J[job],
+            J[index_job],
             False,
             not (
-                sum(X[:, :, index_k, job]) >= jobs[job]["working_days_per_qualification"][k]
+                sum(X[:, :, index_k, index_job])
+                >= jobs[index_job]["working_days_per_qualification"][k]
                 for index_k, k in enumerate(qualifications)
             ),
         )
 
 
 def add_constraints_for_D(model, X, J, D, horizon):
-    for job in J:
+    for index_job in range(len(J)):
 
-        start_date = min([j for j in range(horizon) if sum(X[:, j, :, job]) >= 0])
-        end_date = max([j for j in range(horizon) if sum(X[:, j, :, job]) >= 0])
+        start_date = min([j for j in range(horizon) if sum(X[:, j, :, index_job]) >= 0])
+        end_date = max([j for j in range(horizon) if sum(X[:, j, :, index_job]) >= 0])
         range = end_date - start_date + 1
 
         model.addGenConstrIndicator(
-            J[job],
+            J[index_job],
             True,
-            (start_date, end_date, range),
+            D[index_job, :] == [start_date, end_date, range],
         )
-        model.addGenConstrIndicator(J[job], False, D[job] == (0, horizon + 1, 0))
+        model.addGenConstrIndicator(J[index_job], False, D[index_job, :] == [0, horizon + 1, 0])
+
+
+def add_profit_as_first_objective(model, J, D, jobs=data["jobs"]):
+
+    benef = sum(
+        [
+            J[index_job] * (job.gain - job.daily_penalty * max(D[index_job, 1] - job.due_date, 0))
+            for index_job, job in enumerate(jobs)
+        ]
+    )
+
+    model.setObjective(benef, GRB.MAXIMIZE)
 
 
 def in_qualification(i, k):
