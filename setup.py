@@ -15,6 +15,8 @@ def _read(fname: str) -> str:
 base_packages: List[str] = []
 
 dev_packages = [
+    "pandas",
+    "Jinja2",
     "black",
     "ipykernel",
     "isort",
