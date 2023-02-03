@@ -21,22 +21,19 @@ dev_packages = [
     "ipykernel",
     "isort",
     "pre-commit",
-]
-
-
-test_packages = [
-    "pytest",
+    "gurobipy",
+    "black",
+    "plotly",
 ]
 
 
 setup(
     name="decision",
     version="0.0.1",
-    packages=find_packages(exclude=["notebooks", "tests"]),
+    packages=find_packages(exclude=["notebooks"]),
     long_description=_read("README.md"),
     install_requires=base_packages,
     extras_require={
-        "dev": dev_packages + test_packages,
-        "test": test_packages,
+        "dev": dev_packages,
     },
 )
