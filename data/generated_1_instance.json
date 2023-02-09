@@ -1,0 +1,95 @@
+{
+    "horizon": 5,
+    "jobs": [
+        {
+            "daily_penalty": 1,
+            "due_date": 2,
+            "gain": 22,
+            "name": "Job1",
+            "working_days_per_qualification": {
+                "Skill3": 3
+            }
+        },
+        {
+            "daily_penalty": 4,
+            "due_date": 3,
+            "gain": 16,
+            "name": "Job2",
+            "working_days_per_qualification": {
+                "Skill3": 3,
+                "Skill4": 2,
+                "Skill2": 2,
+                "Skill1": 2
+            }
+        },
+        {
+            "daily_penalty": 1,
+            "due_date": 1,
+            "gain": 29,
+            "name": "Job3",
+            "working_days_per_qualification": {
+                "Skill1": 2
+            }
+        },
+        {
+            "daily_penalty": 1,
+            "due_date": 3,
+            "gain": 25,
+            "name": "Job4",
+            "working_days_per_qualification": {
+                "Skill3": 2,
+                "Skill2": 3,
+                "Skill1": 3
+            }
+        },
+        {
+            "daily_penalty": 1,
+            "due_date": 5,
+            "gain": 30,
+            "name": "Job5",
+            "working_days_per_qualification": {
+                "Skill1": 1,
+                "Skill2": 3,
+                "Skill3": 1,
+                "Skill4": 2
+            }
+        }
+    ],
+    "qualifications": [
+        "Skill1",
+        "Skill2",
+        "Skill3",
+        "Skill4"
+    ],
+    "staff": [
+        {
+            "name": "Person1",
+            "qualifications": [
+                "Skill4",
+                "Skill2"
+            ],
+            "vacations": [
+                0
+            ]
+        },
+        {
+            "name": "Person2",
+            "qualifications": [
+                "Skill2",
+                "Skill1"
+            ],
+            "vacations": [
+                2
+            ]
+        },
+        {
+            "name": "Person3",
+            "qualifications": [
+                "Skill3",
+                "Skill1",
+                "Skill4"
+            ],
+            "vacations": []
+        }
+    ]
+}

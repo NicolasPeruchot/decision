@@ -1,0 +1,145 @@
+{
+    "horizon": 8,
+    "jobs": [
+        {
+            "daily_penalty": 4,
+            "due_date": 5,
+            "gain": 21,
+            "name": "Job1",
+            "working_days_per_qualification": {
+                "Skill3": 1
+            }
+        },
+        {
+            "daily_penalty": 3,
+            "due_date": 6,
+            "gain": 29,
+            "name": "Job2",
+            "working_days_per_qualification": {
+                "Skill3": 3
+            }
+        },
+        {
+            "daily_penalty": 1,
+            "due_date": 5,
+            "gain": 11,
+            "name": "Job3",
+            "working_days_per_qualification": {
+                "Skill1": 3,
+                "Skill3": 2
+            }
+        },
+        {
+            "daily_penalty": 1,
+            "due_date": 8,
+            "gain": 26,
+            "name": "Job4",
+            "working_days_per_qualification": {
+                "Skill1": 3,
+                "Skill4": 2,
+                "Skill3": 2
+            }
+        },
+        {
+            "daily_penalty": 2,
+            "due_date": 6,
+            "gain": 26,
+            "name": "Job5",
+            "working_days_per_qualification": {
+                "Skill2": 2,
+                "Skill1": 1,
+                "Skill3": 3,
+                "Skill4": 2
+            }
+        },
+        {
+            "daily_penalty": 3,
+            "due_date": 5,
+            "gain": 15,
+            "name": "Job6",
+            "working_days_per_qualification": {
+                "Skill4": 3,
+                "Skill3": 3
+            }
+        }
+    ],
+    "qualifications": [
+        "Skill1",
+        "Skill2",
+        "Skill3",
+        "Skill4"
+    ],
+    "staff": [
+        {
+            "name": "Person1",
+            "qualifications": [
+                "Skill3",
+                "Skill1",
+                "Skill4"
+            ],
+            "vacations": [
+                2,
+                3,
+                1,
+                0
+            ]
+        },
+        {
+            "name": "Person2",
+            "qualifications": [
+                "Skill4",
+                "Skill2"
+            ],
+            "vacations": [
+                4,
+                1
+            ]
+        },
+        {
+            "name": "Person3",
+            "qualifications": [
+                "Skill4",
+                "Skill2",
+                "Skill3",
+                "Skill1"
+            ],
+            "vacations": []
+        },
+        {
+            "name": "Person4",
+            "qualifications": [
+                "Skill3"
+            ],
+            "vacations": [
+                2,
+                6,
+                5
+            ]
+        },
+        {
+            "name": "Person5",
+            "qualifications": [
+                "Skill1",
+                "Skill3"
+            ],
+            "vacations": [
+                7
+            ]
+        },
+        {
+            "name": "Person6",
+            "qualifications": [
+                "Skill3",
+                "Skill2",
+                "Skill1",
+                "Skill4"
+            ],
+            "vacations": [
+                3,
+                0,
+                6,
+                4
+            ]
+        }
+    ]
+}
